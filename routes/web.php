@@ -13,6 +13,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::group(['prefix' => '/'], function () {
+    Route::get('/{path?}', function () {
+        return view('index');
+    })->where('path', '.*');
 });
+
+// trickery because no "login" named route existed to handle error redirects
+Route::get('/login', function () {
+    Route::get('/{path?}', function () {
+        return view('index');
+    })->where('path', '.*');
+})->name('login');
