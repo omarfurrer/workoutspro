@@ -1,0 +1,18 @@
+$primary-color: #1976D2;
+$secondary-color: #424242;
+$success-color: #4CAF50;
+$error-color: #FF5252;
+$info-color: #2196F3;
+$accent-color: #82B1FF;
+$warning-color: #FFC107;
+
+// Exporting some colors to set them in frontend/src/plugins/vuetify.js
+:export {
+    primaryColor: $primary-color;
+    secondaryColor: $secondary-color;
+    successColor: $success-color;
+    errorColor: $error-color;
+    infoColor: $info-color;
+    accentColor: $accent-color;
+    warningColor: $warning-color;
+}
