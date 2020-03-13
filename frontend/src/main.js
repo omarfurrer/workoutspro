@@ -50,6 +50,10 @@ axios.interceptors.response.use((response) => {
     return Promise.reject(error);
 });
 
+// axios.defaults.withCredentials = true;
+
+// axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
 Vue.prototype.$axios = axios;
 
 Vue.prototype.$eventHub = new Vue();

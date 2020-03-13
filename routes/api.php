@@ -14,6 +14,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
+Route::middleware('auth:airlock')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+
+Route::get('/airlock/csrf-cookie', '\Laravel\Airlock\Http\Controllers\CsrfCookieController@show');
+
+Route::namespace('Api\v1')->group(function () {
+    Route::post('/register', 'Auth\RegisterController@register');
+    Route::post('/login', 'Auth\LoginController@login');
 });

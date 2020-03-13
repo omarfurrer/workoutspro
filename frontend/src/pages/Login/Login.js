@@ -44,7 +44,7 @@ export default {
                 .then((res) => {
 
                     // Store user and token in state
-                    this.$store.dispatch('updateToken', res.data.auth.access_token);
+                    this.$store.dispatch('updateToken', res.data.token);
                     this.$store.dispatch('updateUser', res.data.user);
 
                     // redirect
