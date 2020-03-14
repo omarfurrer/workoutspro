@@ -12,7 +12,8 @@ export default {
     computed: {
         ...mapGetters({
             'storeWorkouts': 'workouts',
-            'user': 'user'
+            'user': 'user',
+            'activeWorkout': 'activeWorkout'
         }),
         workouts() {
             if (!this.storeWorkouts) {
@@ -26,6 +27,10 @@ export default {
     },
     methods: {
         createNewWorkout() {
+            this.$store.dispatch('updateActiveWorkout', {
+                name: 'Workout Name',
+                exercises: []
+            });
             this.$router.push({
                 path: '/new-workout'
             });
@@ -40,7 +45,6 @@ export default {
                 });
         },
         getWorkouts() {
-
             this.isLoading = true;
 
             return this.$axios.get(this.$helpers.AppHelper.getBaseApiUrl() + `users/${this.user.id}/workouts`)

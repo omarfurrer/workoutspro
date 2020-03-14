@@ -1,6 +1,7 @@
 import {
     mapGetters
 } from 'vuex';
+import moment from 'moment';
 
 export default {
     name: 'NewWorkout',
@@ -21,36 +22,22 @@ export default {
         console.log(this.workout)
     },
     methods: {
-        removeExercise(workoutExerciseId) {
-            const workoutExerciseIndex = this.workout.exercises.findIndex(exercise => exercise.workout_exercise_id == workoutExerciseId);
-            if (workoutExerciseIndex < 0) {
-                return;
-            }
+        removeExercise(workoutExerciseIndex) {
             this.workout.exercises.splice(workoutExerciseIndex, 1);
             this.$store.dispatch('updateActiveWorkout', this.workout);
         },
-        removeSet(workoutExerciseId, setIndex) {
-            const workoutExerciseIndex = this.workout.exercises.findIndex(exercise => exercise.workout_exercise_id == workoutExerciseId);
-            if (workoutExerciseIndex < 0) {
-                return;
-            }
+        removeSet(workoutExerciseIndex, setIndex, refreshPreviousSets = true) {
             this.workout.exercises[workoutExerciseIndex].sets.splice(setIndex, 1);
-            this.recalculatePreviousForWorkoutExercise(workoutExerciseId);
-        },
-        recalculatePreviousForWorkoutExercise(workoutExerciseId) {
-            const workoutExerciseIndex = this.workout.exercises.findIndex(exercise => exercise.workout_exercise_id == workoutExerciseId);
-            if (workoutExerciseIndex < 0) {
-                return;
+            if (refreshPreviousSets) {
+                this.recalculatePreviousForWorkoutExercise(workoutExerciseIndex);
             }
+        },
+        recalculatePreviousForWorkoutExercise(workoutExerciseIndex) {
             for (let i = 0; i < this.workout.exercises[workoutExerciseIndex].sets.length; i++) {
-                this.calculatePrevious(workoutExerciseId, i);
+                this.calculatePrevious(workoutExerciseIndex, i);
             }
         },
-        calculatePrevious(workoutExerciseId, setIndex) {
-            const workoutExerciseIndex = this.workout.exercises.findIndex(exercise => exercise.workout_exercise_id == workoutExerciseId);
-            if (workoutExerciseIndex < 0) {
-                return;
-            }
+        calculatePrevious(workoutExerciseIndex, setIndex) {
             const exercise = this.workout.exercises[workoutExerciseIndex];
             this.getPreviousSet(exercise.id, setIndex + 1)
                 .then(previousSet => {
@@ -77,25 +64,19 @@ export default {
                     previous: null
                 });
             }
-            const workoutExerciseIdTemp = Math.random().toString(36).substr(2, 3);
             this.workout.exercises.push({
-                workout_exercise_id: workoutExerciseIdTemp,
                 id: exercise.id,
                 name: exercise.name,
                 sets: sets
             });
             this.$store.dispatch('updateActiveWorkout', this.workout);
-            this.calculatePrevious(workoutExerciseIdTemp, 0);
-            this.calculatePrevious(workoutExerciseIdTemp, 1);
-            this.calculatePrevious(workoutExerciseIdTemp, 2);
+            this.calculatePrevious(this.workout.exercises.length - 1, 0);
+            this.calculatePrevious(this.workout.exercises.length - 1, 1);
+            this.calculatePrevious(this.workout.exercises.length - 1, 2);
             // update store
             this.isExercisesDialogOpen = false;
         },
-        addSet(workoutExerciseId) {
-            const workoutExerciseIndex = this.workout.exercises.findIndex(exercise => exercise.workout_exercise_id == workoutExerciseId);
-            if (workoutExerciseIndex < 0) {
-                return;
-            }
+        addSet(workoutExerciseIndex) {
             this.workout.exercises[workoutExerciseIndex].sets.push({
                 weight: null,
                 reps: null,
@@ -103,7 +84,7 @@ export default {
                 previous: null
             });
             this.$store.dispatch('updateActiveWorkout', this.workout);
-            this.calculatePrevious(workoutExerciseId, this.workout.exercises[workoutExerciseIndex].sets.length - 1);
+            this.calculatePrevious(workoutExerciseIndex, this.workout.exercises[workoutExerciseIndex].sets.length - 1);
         },
         getPreviousSet(exerciseId, setIndex) {
             return this.$axios.get(this.$helpers.AppHelper.getBaseApiUrl() + `users/${this.user.id}/exercises/${exerciseId}/sets/previous`, {
@@ -123,6 +104,59 @@ export default {
         },
         updateStoreActiveWorkout() {
             this.$store.dispatch('updateActiveWorkout', this.workout);
+        },
+        toggleCompleteSet(workoutExerciseIndex, setIndex) {
+            const isCompleted = this.workout.exercises[workoutExerciseIndex].sets[setIndex].completed_at != null;
+            if (isCompleted) {
+                this.workout.exercises[workoutExerciseIndex].sets[setIndex].completed_at = null;
+            } else {
+                this.workout.exercises[workoutExerciseIndex].sets[setIndex].completed_at = moment().toDate();
+                this.setSetSameAsPrevious(workoutExerciseIndex, setIndex);
+            }
+        },
+        setSetSameAsPrevious(workoutExerciseIndex, setIndex) {
+            const previousSet = this.workout.exercises[workoutExerciseIndex].sets[setIndex].previous;
+            if (previousSet) {
+                this.workout.exercises[workoutExerciseIndex].sets[setIndex].weight = previousSet.weight;
+                this.workout.exercises[workoutExerciseIndex].sets[setIndex].reps = previousSet.reps;
+            }
+        },
+        cleanEmptySets() {
+            for (let exerciseIndex = 0; exerciseIndex < this.workout.exercises.length; exerciseIndex++) {
+                for (let setIndex = 0; setIndex < this.workout.exercises[exerciseIndex].sets.length; setIndex++) {
+                    const set = this.workout.exercises[exerciseIndex].sets[setIndex];
+                    if (set.weight == null || set.weight == '' || set.reps == null || set.reps == '') {
+                        this.removeSet(exerciseIndex, setIndex, false);
+                        setIndex--;
+                    }
+                }
+            }
+        },
+        saveNewWorkout() {
+            // clean empty sets
+            this.cleanEmptySets();
+            if (!this.workout || this.workout.exercises.length < 1) {
+                return;
+            }
+            return this.$axios.post(this.$helpers.AppHelper.getBaseApiUrl() + `users/${this.user.id}/workouts`, this.workout)
+                .then((res) => {
+                    this.$store.dispatch('resetActiveWorkout');
+                    this.$router.push({
+                        path: '/dashboard'
+                    });
+                })
+                .catch(err => {
+                    console.error(err);
+                })
+                .then(set => {
+                    // loading shit
+                });
+        },
+        cancelNewWorkout() {
+            this.$store.dispatch('resetActiveWorkout');
+            this.$router.push({
+                path: '/dashboard'
+            });
         }
     }
 }

@@ -24,7 +24,7 @@ class WorkoutsService
     public function createWorkout($name, $userId, $exercises)
     {
         $workout = Workout::create(['name' => $name, 'user_id' => $userId]);
-
+        // return (object) $exercises;
         foreach ($exercises as  $exercise) {
             $exercise = (object) $exercise;
             $workoutExercise = WorkoutExercise::create([
@@ -34,13 +34,14 @@ class WorkoutsService
             ]);
             foreach ($exercise->sets as $set) {
                 $set = (object) $set;
+                // dd(Carbon::parse($set->completed_at));
                 $workoutSet = $workoutExercise->sets()->create([
                     'user_id' => $userId,
                     'workout_id' => $workout->id,
                     'exercise_id' => $exercise->id,
                     'weight' => $set->weight,
                     'reps' => $set->reps,
-                    'completed_at' => !empty($set->is_completed) ? Carbon::now() : null,
+                    'completed_at' => isset($set->completed_at) ? Carbon::parse($set->completed_at) : null,
                 ]);
             }
         }

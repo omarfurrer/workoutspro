@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Exercise;
 use App\Services\WorkoutsService;
 use App\User;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -51,7 +52,9 @@ class WorkoutsController extends Controller
     public function createWorkout(Request $request, User $user)
     {
         try {
-            // dd($user);
+            // $exercises = $request->get('exercises.0');
+            // dd($exercises);
+            // return response()->json(Carbon::parse($request->exercises[0]['sets'][0]['completed_at']));
             $workout = $this->workoutsService->createWorkout($request->name, $user->id, $request->exercises);
             return response()->json($workout);
         } catch (Exception $e) {

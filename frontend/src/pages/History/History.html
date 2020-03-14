@@ -5,6 +5,7 @@
             block
             dark
             @click="createNewWorkout()"
+            v-if="!activeWorkout"
         >
             <v-icon left>mdi-plus</v-icon> Workout
         </v-btn>
@@ -22,6 +23,37 @@
             </v-col>
         </v-row>
         <v-list two-line>
+            <template v-if="activeWorkout">
+                <v-list-item to="/new-workout">
+                    <template v-slot:default>
+                        <v-list-item-content>
+                            <v-list-item-title>
+                                {{activeWorkout.name}} - <span class="caption green--text">ACTIVE</span>
+                            </v-list-item-title>
+                            <v-row>
+                                <v-col
+                                    class="border-right"
+                                    cols="6"
+                                    v-for="(exercise, exerciseIndex) in activeWorkout.exercises"
+                                    :key="exercise.id"
+                                >
+                                    <v-list-item-subtitle class="text--primary mb-1">{{exerciseIndex + 1}}.
+                                        {{exercise.name}}
+                                    </v-list-item-subtitle>
+                                    <v-list-item-subtitle
+                                        v-for="set in exercise.sets"
+                                        :key="set.id"
+                                    >
+                                        {{set.weight}} <span class="overline">Kg</span> x {{set.reps}}
+                                    </v-list-item-subtitle>
+                                </v-col>
+                            </v-row>
+                        </v-list-item-content>
+                    </template>
+                </v-list-item>
+
+                <v-divider></v-divider>
+            </template>
             <template v-for="(workout, index) in workouts">
                 <v-list-item :key="workout.id">
                     <template v-slot:default>
@@ -49,10 +81,6 @@
                                 </v-col>
                             </v-row>
                         </v-list-item-content>
-
-                        <!-- <v-list-item-action>
-                            <v-list-item-action-text v-text="workout.created_at_friendly"></v-list-item-action-text>
-                        </v-list-item-action> -->
                     </template>
                 </v-list-item>
 

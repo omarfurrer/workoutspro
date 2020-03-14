@@ -16,10 +16,7 @@ const getDefaultState = () => {
         token: null,
         exercises: [],
         workouts: [],
-        activeWorkout: {
-            name: null,
-            exercises: []
-        }
+        activeWorkout: null
     }
 };
 
@@ -72,6 +69,12 @@ export default new Vuex.Store({
             commit
         }, payload) {
             commit('UPDATE_ACTIVE_WORKOUT', payload);
+        },
+        resetActiveWorkout({
+            commit
+        }, payload) {
+            const defaultState = getDefaultState();
+            commit('UPDATE_ACTIVE_WORKOUT', defaultState.activeWorkout);
         },
         logout({
             commit
