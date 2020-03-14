@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Models\Exercise;
 use App\Services\WorkoutsService;
 use App\User;
 use Exception;
@@ -53,6 +54,25 @@ class WorkoutsController extends Controller
             // dd($user);
             $workout = $this->workoutsService->createWorkout($request->name, $user->id, $request->exercises);
             return response()->json($workout);
+        } catch (Exception $e) {
+            return response()->json(["error" => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Get previous set.
+     *
+     * @param  Request  $request
+     * @param  User $user
+     * @param  Exercise $exercise
+     * @return Response
+     */
+    public function getPreviousSet(Request $request, User $user, Exercise $exercise)
+    {
+        try {
+            $setIndex = $request->query('setIndex');
+            $previousSet = $this->workoutsService->getPreviousSet($user->id, $exercise->id, $setIndex);
+            return response()->json($previousSet);
         } catch (Exception $e) {
             return response()->json(["error" => $e->getMessage()], 500);
         }

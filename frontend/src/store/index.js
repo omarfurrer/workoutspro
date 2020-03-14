@@ -14,7 +14,12 @@ const getDefaultState = () => {
     return {
         user: {},
         token: null,
-        workouts: []
+        exercises: [],
+        workouts: [],
+        activeWorkout: {
+            name: null,
+            exercises: []
+        }
     }
 };
 
@@ -27,8 +32,14 @@ export default new Vuex.Store({
         UPDATE_TOKEN(state, payload) {
             state.token = payload;
         },
+        UPDATE_EXERCISES(state, payload) {
+            state.exercises = payload;
+        },
         UPDATE_WORKOUTS(state, payload) {
             state.workouts = payload;
+        },
+        UPDATE_ACTIVE_WORKOUT(state, payload) {
+            state.activeWorkout = payload;
         },
         LOG_OUT(state) {
             // Merge rather than replace so we don't lose observers
@@ -47,10 +58,20 @@ export default new Vuex.Store({
         }, payload) {
             commit('UPDATE_TOKEN', payload);
         },
+        updateExercises({
+            commit
+        }, payload) {
+            commit('UPDATE_EXERCISES', payload);
+        },
         updateWorkouts({
             commit
         }, payload) {
             commit('UPDATE_WORKOUTS', payload);
+        },
+        updateActiveWorkout({
+            commit
+        }, payload) {
+            commit('UPDATE_ACTIVE_WORKOUT', payload);
         },
         logout({
             commit
@@ -62,7 +83,17 @@ export default new Vuex.Store({
         user: state => state.user,
         token: state => state.token,
         isLoggedIn: state => !!state.token,
-        workouts: state => state.workouts
+        exercises: state => state.exercises,
+        getExercise: state => (id) => {
+            const exercise = state.exercises.find(x => x.id === id);
+            return exercise;
+        },
+        workouts: state => state.workouts,
+        activeWorkout: state => state.activeWorkout,
+        // getWorkoutExercise: state => (workoutExerciseId) => {
+        //     const workoutExercise = state.activeWorkout.exercises.find(x => x.workout_exercise_id === workoutExerciseId);
+        //     return workoutExercise;
+        // },
     },
     modules: {},
     plugins: [new VuexPersistence({

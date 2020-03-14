@@ -5,6 +5,9 @@ export default {
             isNavigationBarVisible: false
         }
     },
+    created() {
+        this.updateExercises();
+    },
     methods: {
         toggleNavigationsBar() {
             this.isNavigationBarVisible = !this.isNavigationBarVisible;
@@ -15,5 +18,26 @@ export default {
                 path: '/'
             });
         },
+        updateExercises() {
+            console.log('Updating Exercises');
+            return this.getExercises()
+                .then(exercises => {
+                    if (exercises) {
+                        this.$store.dispatch('updateExercises', exercises);
+                    }
+                });
+        },
+        getExercises() {
+            return this.$axios.get(this.$helpers.AppHelper.getBaseApiUrl() + `exercises`)
+                .then((res) => {
+                    return res.data;
+                })
+                .catch(err => {
+                    console.error(err);
+                })
+                .then(exercises => {
+                    return exercises;
+                });
+        }
     }
 }

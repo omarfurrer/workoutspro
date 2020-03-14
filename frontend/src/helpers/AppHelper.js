@@ -48,5 +48,8 @@ export default {
         const formData = new FormData();
         Object.keys(data).forEach(key => formData.append(key, data[key] == null ? '' : data[key])); // Laravel does not parse nulls when using form data so we convert them to empty string
         return formData;
+    },
+    isObjectEmpty(o) {
+        return Object.keys(o).length === 0;
     }
 }

@@ -25,6 +25,11 @@ export default {
         this.updateWorkouts();
     },
     methods: {
+        createNewWorkout() {
+            this.$router.push({
+                path: '/new-workout'
+            });
+        },
         updateWorkouts() {
             console.log('Updating Workouts');
             return this.getWorkouts()

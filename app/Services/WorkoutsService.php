@@ -7,6 +7,7 @@ use App\Models\WorkoutExercise;
 use App\Models\WorkoutSet;
 use App\User;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 
 class WorkoutsService
 {
@@ -59,12 +60,21 @@ class WorkoutsService
             $exercises->transform(function ($exercise) {
                 // get sets
                 $sets = WorkoutSet::where('workout_exercise_id', $exercise->pivot->id)->get();
-                $sets->transform(function ($set) {
+                $sets->transform(function ($set, $key) {
+
+                    $previousSet = $this->getPreviousSet($set->user_id, $set->exercise_id, $key + 1, $set->workout_id);
+                    // dd($previousSet);
                     return [
                         'id' => $set->id,
                         'weight' => $set->weight,
                         'reps' => $set->reps,
                         'completed_at' => $set->completed_at,
+                        'previous' => $previousSet ? [
+                            'id' => $previousSet->id,
+                            'weight' => $previousSet->weight,
+                            'reps' => $previousSet->reps,
+                            'completed_at' => $previousSet->completed_at,
+                        ] : null
                     ];
                 });
 
@@ -84,5 +94,29 @@ class WorkoutsService
         });
 
         return $workouts;
+    }
+
+    public function getPreviousSet($userId, $exerciseId, $setIndex, $workoutId = null)
+    {
+
+        // get last workout exercise
+        $workoutExercise = WorkoutExercise::where('user_id', $userId)->where('exercise_id', $exerciseId);
+
+        if ($workoutId) {
+            $workoutExercise = $workoutExercise->where('workout_id', '<', $workoutId);
+        }
+
+        $workoutExercise = $workoutExercise->orderBy('id', 'desc')->first();
+
+        if ($workoutExercise) {
+            // get workout exercise set
+            $sets = WorkoutSet::where('workout_exercise_id', $workoutExercise->id)->get();
+
+            if (key_exists($setIndex - 1, $sets->toArray())) {
+                return $sets[$setIndex - 1];
+            }
+        }
+
+        return null;
     }
 }

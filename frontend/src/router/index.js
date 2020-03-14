@@ -22,6 +22,7 @@ import UnauthedLayout from '../layouts/Unauthed/Unauthed.vue';
 import LoginPage from '../pages/Login/Login.vue';
 // import DashboardPage from '../pages/Dashboard/Dashboard.vue';
 import HistoryPage from '../pages/History/History.vue';
+import NewWorkoutPage from '../pages/NewWorkout/NewWorkout.vue';
 
 Vue.use(VueRouter)
 
@@ -64,6 +65,9 @@ const routes = [{
         children: [{
             path: 'dashboard',
             component: HistoryPage
+        }, {
+            path: 'new-workout',
+            component: NewWorkoutPage
         }]
     },
     {

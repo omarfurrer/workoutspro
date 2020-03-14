@@ -24,7 +24,9 @@ Route::namespace('Api\v1')->group(function () {
         Route::get('/user', function (Request $request) {
             return $request->user();
         });
+        Route::get('/exercises', 'ExercisesController@getAll');
         Route::get('/users/{user}/workouts', 'WorkoutsController@getWorkouts');
         Route::post('/users/{user}/workouts', 'WorkoutsController@createWorkout');
+        Route::get('/users/{user}/exercises/{exercise}/sets/previous', 'WorkoutsController@getPreviousSet');
     });
 });
