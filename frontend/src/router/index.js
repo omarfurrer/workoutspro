@@ -20,7 +20,8 @@ import UnauthedLayout from '../layouts/Unauthed/Unauthed.vue';
 
 // Pages
 import LoginPage from '../pages/Login/Login.vue';
-import DashboardPage from '../pages/Dashboard/Dashboard.vue';
+// import DashboardPage from '../pages/Dashboard/Dashboard.vue';
+import HistoryPage from '../pages/History/History.vue';
 
 Vue.use(VueRouter)
 
@@ -55,14 +56,14 @@ const routes = [{
         ]
     },
     {
-        path: '',
+        path: '/',
         component: AuthedLayout,
         meta: {
             requireAuth: true
         },
         children: [{
             path: 'dashboard',
-            component: DashboardPage
+            component: HistoryPage
         }]
     },
     {

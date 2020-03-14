@@ -1,0 +1,65 @@
+<div id="history-page">
+    <v-container>
+        <v-btn
+            color="primary"
+            block
+            dark
+        >
+            <v-icon left>mdi-plus</v-icon> Workout
+        </v-btn>
+        <v-divider></v-divider>
+        <v-row v-if="isLoading">
+            <v-col
+                cols="12"
+                class="text-center"
+            >
+                <v-progress-circular
+                    indeterminate
+                    width="2"
+                    size="20"
+                ></v-progress-circular>
+            </v-col>
+        </v-row>
+        <v-list two-line>
+            <template v-for="(workout, index) in workouts">
+                <v-list-item :key="workout.id">
+                    <template v-slot:default>
+                        <v-list-item-content>
+                            <v-list-item-title>
+                                {{workout.name}} <span
+                                    class="float-right caption">{{workout.created_at_friendly}}</span>
+                            </v-list-item-title>
+                            <v-row>
+                                <v-col
+                                    class="border-right"
+                                    cols="6"
+                                    v-for="(exercise, exerciseIndex) in workout.exercises"
+                                    :key="exercise.id"
+                                >
+                                    <v-list-item-subtitle class="text--primary mb-1">{{exerciseIndex + 1}}.
+                                        {{exercise.name}}
+                                    </v-list-item-subtitle>
+                                    <v-list-item-subtitle
+                                        v-for="set in exercise.sets"
+                                        :key="set.id"
+                                    >
+                                        {{set.weight}} <span class="overline">Kg</span> x {{set.reps}}
+                                    </v-list-item-subtitle>
+                                </v-col>
+                            </v-row>
+                        </v-list-item-content>
+
+                        <!-- <v-list-item-action>
+                            <v-list-item-action-text v-text="workout.created_at_friendly"></v-list-item-action-text>
+                        </v-list-item-action> -->
+                    </template>
+                </v-list-item>
+
+                <v-divider
+                    v-if="index + 1 < workouts.length"
+                    :key="index"
+                ></v-divider>
+            </template>
+        </v-list>
+    </v-container>
+</div>

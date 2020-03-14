@@ -15,16 +15,16 @@ Vue.prototype.$helpers = {
 
 
 // Add token to all requests if found
-// axios.interceptors.request.use((config) => {
+axios.interceptors.request.use((config) => {
 
-//     if (store.getters.isLoggedIn && store.getters.token) {
-//         config.headers.common['Authorization'] = `Bearer ${store.getters.token}`;
-//     }
+    if (store.getters.isLoggedIn && store.getters.token) {
+        config.headers.common['Authorization'] = `Bearer ${store.getters.token}`;
+    }
 
-//     return config;
-// }, (error) => {
-//     return Promise.reject(error);
-// });
+    return config;
+}, (error) => {
+    return Promise.reject(error);
+});
 
 // Handle specific response codes
 axios.interceptors.response.use((response) => {

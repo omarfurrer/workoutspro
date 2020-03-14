@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Airlock\HasApiTokens;
+use App\Models\Workout;
 
 class User extends Authenticatable
 {
@@ -37,4 +38,12 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Get the workouts.
+     */
+    public function workouts()
+    {
+        return $this->hasMany(Workout::class);
+    }
 }

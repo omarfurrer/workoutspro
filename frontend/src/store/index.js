@@ -13,7 +13,8 @@ Vue.use(Vuex);
 const getDefaultState = () => {
     return {
         user: {},
-        token: null
+        token: null,
+        workouts: []
     }
 };
 
@@ -25,6 +26,9 @@ export default new Vuex.Store({
         },
         UPDATE_TOKEN(state, payload) {
             state.token = payload;
+        },
+        UPDATE_WORKOUTS(state, payload) {
+            state.workouts = payload;
         },
         LOG_OUT(state) {
             // Merge rather than replace so we don't lose observers
@@ -43,6 +47,11 @@ export default new Vuex.Store({
         }, payload) {
             commit('UPDATE_TOKEN', payload);
         },
+        updateWorkouts({
+            commit
+        }, payload) {
+            commit('UPDATE_WORKOUTS', payload);
+        },
         logout({
             commit
         }) {
@@ -53,6 +62,7 @@ export default new Vuex.Store({
         user: state => state.user,
         token: state => state.token,
         isLoggedIn: state => !!state.token,
+        workouts: state => state.workouts
     },
     modules: {},
     plugins: [new VuexPersistence({
