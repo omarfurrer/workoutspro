@@ -1,6 +1,17 @@
 /node_modules
 /public/hot
 /public/storage
+/public/fonts
+/public/css
+/public/js
+/public/img
+/public/assets
+/public/service-worker.js
+/public/manifest.json
+/public/precache-manifest.*.js
+/public/favicon.ico
+/resources/assets/js/env.js
+/resources/views/index.blade.php
 /storage/*.key
 /vendor
 .env
