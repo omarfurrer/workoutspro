@@ -27,7 +27,7 @@ class CreateWorkoutSetsTable extends Migration
             $table->foreignId('workout_exercise_id')
                 ->constrained()
                 ->onDelete('cascade');
-            $table->float('weight', 8, 2);
+            $table->float('weight', 8, 2)->nullable();
             $table->integer('reps');
             $table->timestamp('completed_at');
             $table->timestamps();

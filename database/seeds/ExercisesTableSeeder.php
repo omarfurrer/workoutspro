@@ -18,6 +18,7 @@ class ExercisesTableSeeder extends Seeder
             ['name' => 'Chest Fly', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
             ['name' => 'Incline Bench Press', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
             ['name' => 'Bench Press (Barbell)', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+            ['name' => 'Push Up', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
         ]);
     }
 }

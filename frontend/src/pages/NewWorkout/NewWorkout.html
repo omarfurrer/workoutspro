@@ -21,7 +21,7 @@
 
         <div
             v-for="(exercise, exerciseIndex) in workout.exercises"
-            :key="exercise.id"
+            :key="exerciseIndex"
         >
             <v-row>
                 <v-col cols="9">
@@ -58,7 +58,7 @@
                         label="Previous"
                         disabled
                         dense
-                        :value="set.previous ? set.previous.weight +' x ' + set.previous.reps : null"
+                        :value="set.previous ? (set.previous.weight || '0') +' x ' + set.previous.reps : null"
                         hide-details="auto"
                     ></v-text-field>
                 </v-col>
@@ -145,15 +145,23 @@
 
             <v-card>
                 <v-list dense>
-                    <v-list-item
-                        v-for="exercise in exercises"
-                        :key="exercise.id"
-                        @click="addExcercise(exercise.id)"
+                    <v-list-item-group
+                        v-model="newExercises"
+                        multiple
                     >
-                        <v-list-item-content>
-                            <v-list-item-title>{{exercise.name}}</v-list-item-title>
-                        </v-list-item-content>
-                    </v-list-item>
+                        <v-list-item
+                            v-for="exercise in exercises"
+                            :key="exercise.id"
+                            :value="exercise.id"
+                            active-class="primary--text"
+                        >
+                            <template v-slot:default="{ active, toggle }">
+                                <v-list-item-content>
+                                    <v-list-item-title>{{exercise.name}}</v-list-item-title>
+                                </v-list-item-content>
+                            </template>
+                        </v-list-item>
+                    </v-list-item-group>
                 </v-list>
 
                 <v-divider></v-divider>
@@ -163,7 +171,7 @@
                     <v-btn
                         color="primary"
                         text
-                        @click="isExercisesDialogOpen = false"
+                        @click="addMultipleExercises(newExercises)"
                     >Add</v-btn>
                 </v-card-actions>
             </v-card>

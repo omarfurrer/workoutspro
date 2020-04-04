@@ -44,7 +44,7 @@
                                         v-for="set in exercise.sets"
                                         :key="set.id"
                                     >
-                                        {{set.weight}} <span class="overline">Kg</span> x {{set.reps}}
+                                        {{set.weight || '0'}} <span class="overline">Kg</span> x {{set.reps}}
                                     </v-list-item-subtitle>
                                 </v-col>
                             </v-row>
@@ -76,7 +76,7 @@
                                         v-for="set in exercise.sets"
                                         :key="set.id"
                                     >
-                                        {{set.weight}} <span class="overline">Kg</span> x {{set.reps}}
+                                        {{set.weight || '0'}} <span class="overline">Kg</span> x {{set.reps}}
                                     </v-list-item-subtitle>
                                 </v-col>
                             </v-row>

@@ -7,7 +7,8 @@ export default {
     name: 'NewWorkout',
     data() {
         return {
-            isExercisesDialogOpen: false
+            isExercisesDialogOpen: false,
+            newExercises: []
         }
     },
     computed: {
@@ -51,6 +52,13 @@ export default {
                     };
                     this.$store.dispatch('updateActiveWorkout', this.workout);
                 });
+        },
+        addMultipleExercises(ids) {
+            for (let i = 0; i < ids.length; i++) {
+                this.addExcercise(ids[i]);
+            }
+            // clear new exercises
+            this.newExercises = [];
         },
         addExcercise(id) {
             const exercise = this.getExercise(id);
@@ -125,7 +133,7 @@ export default {
             for (let exerciseIndex = 0; exerciseIndex < this.workout.exercises.length; exerciseIndex++) {
                 for (let setIndex = 0; setIndex < this.workout.exercises[exerciseIndex].sets.length; setIndex++) {
                     const set = this.workout.exercises[exerciseIndex].sets[setIndex];
-                    if (set.weight == null || set.weight == '' || set.reps == null || set.reps == '') {
+                    if (set.reps == null || set.reps == '') {
                         this.removeSet(exerciseIndex, setIndex, false);
                         setIndex--;
                     }
