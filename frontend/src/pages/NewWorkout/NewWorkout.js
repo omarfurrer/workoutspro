@@ -119,7 +119,10 @@ export default {
                 this.workout.exercises[workoutExerciseIndex].sets[setIndex].completed_at = null;
             } else {
                 this.workout.exercises[workoutExerciseIndex].sets[setIndex].completed_at = moment().toDate();
-                this.setSetSameAsPrevious(workoutExerciseIndex, setIndex);
+                // if reps has a value do not set like previous one
+                if (!this.workout.exercises[workoutExerciseIndex].sets[setIndex].reps) {
+                    this.setSetSameAsPrevious(workoutExerciseIndex, setIndex);
+                }
             }
         },
         setSetSameAsPrevious(workoutExerciseIndex, setIndex) {
