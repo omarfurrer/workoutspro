@@ -1,0 +1,202 @@
+<div class="workout-exercise">
+    <v-container
+        fluid
+        v-if="workout"
+    >
+        <v-row>
+            <v-col cols="6">
+                <v-text-field
+                    class="centered-input centered-input-label"
+                    dense
+                    v-model="workout.name"
+                    label="Workout Name"
+                    solo
+                    hide-details="auto"
+                    :change="updateStoreActiveWorkout()"
+                ></v-text-field>
+            </v-col>
+        </v-row>
+
+        <v-divider></v-divider>
+
+        <div
+            v-for="(exercise, exerciseIndex) in workout.exercises"
+            :key="exerciseIndex"
+        >
+            <v-row>
+                <v-col cols="9">
+                    <p class="title mb-0 d-inline">{{exercise.name}}</p>
+                    <v-menu offset-y>
+                        <template v-slot:activator="{ on }">
+                            <v-btn
+                                class="ma-2"
+                                small
+                                v-on="on"
+                                icon
+                            >
+                                <v-icon>mdi-dots-horizontal</v-icon>
+                            </v-btn>
+                        </template>
+                        <v-list dense>
+                            <v-list-item @click="removeExercise(exerciseIndex)">
+                                <v-list-item-title>Remove</v-list-item-title>
+                            </v-list-item>
+                        </v-list>
+                    </v-menu>
+                </v-col>
+            </v-row>
+            <v-row
+                v-for="(set, setIndex) in exercise.sets"
+                :key="setIndex"
+                class="custom-gutters"
+            >
+                <v-col
+                    cols="3"
+                    @click="setSetSameAsPrevious(exerciseIndex,setIndex)"
+                >
+                    <v-text-field
+                        label="Previous"
+                        disabled
+                        dense
+                        :value="set.previous ? (set.previous.weight || '0') +' x ' + set.previous.reps : null"
+                        hide-details="auto"
+                    ></v-text-field>
+                </v-col>
+                <v-col cols="3">
+                    <v-text-field
+                        class="centered-input centered-input-label"
+                        dense
+                        v-model="workout.exercises[exerciseIndex].sets[setIndex].weight"
+                        label="Kg"
+                        solo
+                        hide-details="auto"
+                    ></v-text-field>
+                </v-col>
+                <v-col cols="3">
+                    <v-text-field
+                        class="centered-input centered-input-label"
+                        dense
+                        v-model="workout.exercises[exerciseIndex].sets[setIndex].reps"
+                        label="Reps"
+                        solo
+                        hide-details="auto"
+                    ></v-text-field>
+                </v-col>
+                <v-col cols="1">
+                    <v-btn
+                        :color="workout.exercises[exerciseIndex].sets[setIndex].completed_at ? 'success' : ''"
+                        fab
+                        x-small
+                        class="smaller-btn"
+                        dark
+                        @click="toggleCompleteSet(exerciseIndex,setIndex)"
+                    >
+                        <v-icon>mdi-check</v-icon>
+                    </v-btn>
+                </v-col>
+                <v-col
+                    class="text-center"
+                    cols="2"
+                >
+                    <v-menu offset-y>
+                        <template v-slot:activator="{ on }">
+                            <v-btn
+                                small
+                                v-on="on"
+                                icon
+                            >
+                                <v-icon>mdi-dots-vertical</v-icon>
+                            </v-btn>
+                        </template>
+                        <v-list dense>
+                            <v-list-item @click="removeSet(exerciseIndex,setIndex)">
+                                <v-list-item-title>Remove</v-list-item-title>
+                            </v-list-item>
+                        </v-list>
+                    </v-menu>
+                </v-col>
+            </v-row>
+            <v-btn
+                class="mt-5"
+                block
+                color="secondary"
+                dark
+                dense
+                small
+                @click="addSet(exerciseIndex)"
+            >Add Set</v-btn>
+        </div>
+
+        <v-dialog
+            v-model="isExercisesDialogOpen"
+            width="500"
+        >
+            <template v-slot:activator="{ on }">
+                <v-btn
+                    class="mt-5"
+                    block
+                    color="primary"
+                    dark
+                    dense
+                    small
+                    v-on="on"
+                >Add Exercise</v-btn>
+            </template>
+
+            <v-card>
+                <v-list dense>
+                    <v-list-item-group
+                        v-model="newExercises"
+                        multiple
+                    >
+                        <v-list-item
+                            v-for="exercise in exercises"
+                            :key="exercise.id"
+                            :value="exercise.id"
+                            active-class="primary--text"
+                        >
+                            <template v-slot:default="{ active, toggle }">
+                                <v-list-item-content>
+                                    <v-list-item-title>{{exercise.name}}</v-list-item-title>
+                                </v-list-item-content>
+                            </template>
+                        </v-list-item>
+                    </v-list-item-group>
+                </v-list>
+
+                <v-divider></v-divider>
+
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                        color="primary"
+                        text
+                        @click="addMultipleExercises(newExercises)"
+                    >Add</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+
+        <v-divider class="mt-5"></v-divider>
+
+        <v-btn
+            class="mt-5"
+            block
+            color="success"
+            dark
+            dense
+            small
+            @click="saveNewWorkout()"
+        >Complete</v-btn>
+
+        <v-btn
+            class="mt-5"
+            block
+            color="error"
+            dark
+            dense
+            small
+            @click="cancelNewWorkout()"
+        >Cancel</v-btn>
+    </v-container>
+</div>
