@@ -148,18 +148,12 @@ export default new Vuex.Store({
                 sets: sets
             });
             if (shouldCalulatePrevious) {
-                dispatch('calculateActiveWorkoutPreviousSet', {
-                    exerciseIndex: getters.activeWorkout.exercises.length - 1,
-                    setIndex: 0
-                });
-                dispatch('calculateActiveWorkoutPreviousSet', {
-                    exerciseIndex: getters.activeWorkout.exercises.length - 1,
-                    setIndex: 1
-                });
-                dispatch('calculateActiveWorkoutPreviousSet', {
-                    exerciseIndex: getters.activeWorkout.exercises.length - 1,
-                    setIndex: 2
-                });
+                for (let i = 0; i < nOfSets; i++) {
+                    dispatch('calculateActiveWorkoutPreviousSet', {
+                        exerciseIndex: getters.activeWorkout.exercises.length - 1,
+                        setIndex: i
+                    });
+                }
             }
         },
         addActiveWorkoutExerciseSet({
@@ -338,6 +332,33 @@ export default new Vuex.Store({
                     }
                 }
             }
+        },
+        createActiveWorkout({
+            commit,
+            dispatch
+        }, payload) {
+            const {
+                workout
+            } = payload;
+
+            commit('UPDATE_ACTIVE_WORKOUT', {
+                name: workout ? workout.name : 'Workout Name',
+                exercises: []
+            });
+
+            if (workout) {
+                workout.exercises.forEach(duplicateWorkoutExercise => {
+                    dispatch('addActiveWorkoutExercise', {
+                        exerciseId: duplicateWorkoutExercise.id,
+                        nOfSets: duplicateWorkoutExercise.sets.length
+                    });
+                    // exercises.push({
+                    //     id: duplicateWorkoutExercise.id,
+                    //     nOfSets: duplicateWorkoutExercise.sets.length
+                    // });
+                });
+            }
+
         },
         updateActiveWorkout({
             commit

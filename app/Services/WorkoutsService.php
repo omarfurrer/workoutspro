@@ -80,6 +80,7 @@ class WorkoutsService
                 });
 
                 return [
+                    'id' => $exercise->id,
                     'name' => $exercise->name,
                     'sets' => $sets
                 ];

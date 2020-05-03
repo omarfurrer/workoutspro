@@ -59,8 +59,25 @@
                     <template v-slot:default>
                         <v-list-item-content>
                             <v-list-item-title>
-                                {{workout.name}} <span
-                                    class="float-right caption">{{workout.created_at_friendly}}</span>
+                                {{workout.name}}
+                                <v-menu offset-y>
+                                    <template v-slot:activator="{ on }">
+                                        <v-btn
+                                            class="ma-2"
+                                            small
+                                            v-on="on"
+                                            icon
+                                        >
+                                            <v-icon>mdi-dots-horizontal</v-icon>
+                                        </v-btn>
+                                    </template>
+                                    <v-list dense>
+                                        <v-list-item @click="repeatWorkout(workout)">
+                                            <v-list-item-title>Repeat</v-list-item-title>
+                                        </v-list-item>
+                                    </v-list>
+                                </v-menu>
+                                <span class="float-right caption">{{workout.created_at_friendly}}</span>
                             </v-list-item-title>
                             <v-row>
                                 <v-col

@@ -26,10 +26,9 @@ export default {
         this.updateWorkouts();
     },
     methods: {
-        createNewWorkout() {
-            this.$store.dispatch('updateActiveWorkout', {
-                name: 'Workout Name',
-                exercises: []
+        createNewWorkout(duplicateWorkout) {
+            this.$store.dispatch('createActiveWorkout', {
+                workout: duplicateWorkout
             });
             this.$router.push({
                 path: '/new-workout'
@@ -58,6 +57,9 @@ export default {
                     this.isLoading = false;
                     return workouts;
                 });
+        },
+        repeatWorkout(workout) {
+            this.createNewWorkout(workout);
         }
     }
 }
