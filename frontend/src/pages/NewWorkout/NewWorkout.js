@@ -50,12 +50,12 @@ export default {
             });
             // clear new exercises
             this.newExercises = [];
+            this.isExercisesDialogOpen = false;
         },
         addExcercise(id) {
             this.$store.dispatch('addActiveWorkoutExercise', {
                 exerciseId: id
             });
-            // update store
             this.isExercisesDialogOpen = false;
         },
         addSet(workoutExerciseIndex) {
