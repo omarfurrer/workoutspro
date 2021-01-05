@@ -10,7 +10,7 @@
     "watch": "vue-cli-service build --no-clean --watch"
   },
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "core-js": "^3.6.4",
     "localforage": "^1.7.3",
     "moment": "^2.24.0",
