@@ -51,7 +51,7 @@ class WorkoutsService
 
     public function getUserWorkouts($userId)
     {
-        $workouts = User::find($userId)->workouts()->orderBy('id', 'desc')->get();
+        $workouts = User::find($userId)->workouts()->limit(20)->orderBy('id', 'desc')->get();
 
         $workouts->transform(function ($workout) {
 
